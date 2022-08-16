@@ -27,17 +27,26 @@ public class UserController {
         //return new ResponseEntity<>(user,headers, HttpStatus.OK);
     }
 
+    @GetMapping(value="/user/byName/{name}")
+    public User getUserByName(@PathVariable String name){
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        Optional<User> user = userService.getUserByName(name);
+        return user.get();
+        //return new ResponseEntity<>(user,headers, HttpStatus.OK);
+    }
+
     @GetMapping(value="/users", produces="application/json")
     public List<User> getAllUsers(){
         return userService.getAllUsers();
     }
 
-    @PostMapping("saveUser")
-    public void saveUser(@RequestBody User user){
-        userService.saveUser(user);
+    @PostMapping("/saveUser")
+    public User saveUser(@RequestBody User user){
+        return userService.saveUser(user);
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
     }
