@@ -28,12 +28,20 @@ public class UserController {
     }
 
     @GetMapping(value="/user/byName/{name}")
-    public User getUserByName(@PathVariable String name){
+    public ResponseEntity<User> getUserByName(@PathVariable String name){
+        HttpStatus status = HttpStatus.OK;
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        Optional<User> user = userService.getUserByName(name);
-        return user.get();
-        //return new ResponseEntity<>(user,headers, HttpStatus.OK);
+        User user = new User();
+        try {
+            Optional<User>  userOpt = userService.getUserByName(name);
+            if(userOpt.isPresent()) {
+                user = userOpt.get();
+            }
+        }catch(Exception e){
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<User>(user,headers, status);
     }
 
     @GetMapping(value="/users", produces="application/json")
